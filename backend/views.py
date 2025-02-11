@@ -1,4 +1,4 @@
-from flask import Blueprint,request
+from flask import Blueprint,request,jsonify,json
 import datetime
 from connection import client
 from bson.objectid import ObjectId
@@ -9,10 +9,19 @@ views = Blueprint(__name__,"views")
 
 @views.route("/")
 def home():
-    res = []
-    for db in client.list_database_names():
-        res.append(db)
-    return res
+    data = [
+    {
+        "content": "This is the first note",
+        "last_updated": "Fri, 07 Feb 2025 20:07:59 GMT",
+        "title": "first Note"
+    },
+    {
+        "content": "Sucessfully working for the api request",
+        "last_updated": "Sat, 08 Feb 2025 18:51:51 GMT",
+        "title": "note from Postman"
+    }
+]
+    return jsonify(data)
 
 @views.route("/addNote",methods=["POST"])
 def addNote():
@@ -51,10 +60,14 @@ def getNotes():
     # get all notes for user will be used when login function is added
     db = client.notes
     notes_collection = db.note
-    
- 
     notes = notes_collection.find({})
-    return json.loads(json_util.dumps(notes))
+    res = []
+    for note in notes:
+        res.append({
+            "_id" : str(note["_id"]),
+            **{key: note[key] for key in note if key != "_id"}
+        })
+    return res
 
 @views.route("/updateNote/<note_id>",methods=["POST"])
 def updateNotes(note_id):

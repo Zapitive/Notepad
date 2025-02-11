@@ -1,0 +1,50 @@
+import { useEffect,useState } from "react";
+
+function App() {
+
+  const [data,setData] = useState([])
+
+  useEffect(()=>{
+    fetch("/api/getNotes").then((res)=>{
+      res.json().then((ds)=>{
+        setData(ds);
+        console.log(ds)
+      })
+    })
+  },[])
+
+  return (
+    <div>
+      <h1 className="text-3xl font-bold underline" >Notepad</h1>
+            {data ? (
+                <div>
+                  {data.map(item => (
+                      <ul key={item.last_updated}>
+                        <li>{item.title}</li>
+                        <li>{item.content}</li>
+                      </ul>
+                    ))}
+                </div>
+                    
+                
+            ) : (
+                <p>Loading...</p>
+            )}
+        </div>
+  );
+}
+
+export default App;
+
+
+const { createProxyMiddleware } = require('http-proxy-middleware')
+
+module.exports = function(app) {
+    app.use(
+        '/api',
+        createProxyMiddleware({
+            target: 'http://127.0.0.1:5000',
+            changeOrigin: true,
+        })
+    )
+}
