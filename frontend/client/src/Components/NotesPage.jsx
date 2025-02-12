@@ -10,8 +10,7 @@ function NotesPage() {
   const getNotes = ()=>{
     fetch("/api/getNotes").then((res)=>{
       res.json().then((ds)=>{
-        setData(ds);
-        console.log(ds)
+        setData(ds)
       })
     })
   }
