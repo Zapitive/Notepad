@@ -26,8 +26,8 @@ def home():
 @views.route("/addNote",methods=["POST"])
 def addNote():
     # getting data from form to add note
-    title = request.form['title']
-    content = request.form['content']
+    title = request.json['title']
+    content = request.json['content']
 
     # getting to note collection
     
@@ -73,8 +73,8 @@ def getNotes():
 def updateNotes(note_id):
     #getting variables to update for
     
-    title = request.form['title']
-    content = request.form['content']
+    title = request.json['title']
+    content = request.json['content']
 
     # connecting to the database of notes
     db = client.notes
@@ -92,9 +92,7 @@ def updateNotes(note_id):
 
     # getting the note by id to update
     notes_collection.update_one(document_to_find,updated_note)
-    note = notes_collection.find_one(document_to_find)
-
-    return json.loads(json_util.dumps(note))
+    return 'Note update successfully'
 
 
 @views.route("/deleteNote/<note_id>",methods=["DELETE"])
